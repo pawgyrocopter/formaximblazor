@@ -1,0 +1,46 @@
+﻿@page "/"
+@using System.Security.Cryptography.X509Certificates
+@using System.Text
+@using System.Text.Json
+@using System.Net.Mime
+@inject IHttpClientFactory ClientFactory
+<PageTitle>Index</PageTitle>
+
+<h1>Hello, world!</h1>
+
+Welcome to your new app.
+
+<SurveyPrompt Title="How is Blazor working for you?"/>
+
+@code{
+    
+    public class LoginDtio
+    {
+         public string Email { get; set; }
+
+         public string Password { get; set; }
+    }
+    protected override async Task OnInitializedAsync()
+    {
+       // var client = new HttpClient();
+
+        var adminAcc = new LoginDtio() {Email = "1", Password = "123123"};
+        
+       // var request = await client.PostAsJsonAsync("https://localhost:7222/login", adminAcc);
+        
+       // Console.WriteLine(request.StatusCode + " " + await request.Content.ReadAsStringAsync());
+        
+        var request = new HttpRequestMessage(HttpMethod.Post,"https://localhost:7222/login");
+        var loginDto = new StringContent(
+            JsonSerializer.Serialize(adminAcc),
+            Encoding.UTF8,
+            MediaTypeNames.Application.Json);
+        
+        var client = ClientFactory.CreateClient();
+
+        using var response =  await client.PostAsync("https://localhost:7222/api/account/login", loginDto);
+        Console.WriteLine(await response.Content.ReadAsStringAsync() + " " + response.StatusCode);
+    }
+
+
+}

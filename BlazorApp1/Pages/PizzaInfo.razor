@@ -1,0 +1,48 @@
+﻿@page "/pizzaInfo"
+@using BlazorApp1.Data
+
+
+
+@if(this.Order != null){
+    <h2>Order information</h2>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>pizza name</th>
+            <th>pizza ingredients</th>
+            <th>pizza weight</th>
+            <th>pizza cost</th>
+            <th>pizza state</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var pizza in Order.Pizzas )
+        {
+            <tr>
+                <td >@pizza.Name</td>
+                <td >@pizza.Ingredients</td>
+                <td >@pizza.Weight</td>
+                <td >@pizza.Cost</td>
+                <td >@pizza.State</td>
+                
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+
+@code
+{
+    [Parameter]
+    public OrderDto? Order { get; set; }
+    
+    [Parameter]
+    public EventCallback<OrderDto> OrderChanged { get; set; }
+
+    protected override void OnParametersSet()
+    {
+    // this is not getting called
+        StateHasChanged();
+        Console.WriteLine(Order);
+    }
+}

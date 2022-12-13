@@ -1,0 +1,63 @@
+﻿@page "/pizza"
+@using BlazorApp1.Data
+@inject AccountService AccountService
+@inject OrderService OrderService
+pizzz ahere
+@if (orders == null)
+{
+    <p>
+        <em>Loading...</em>
+    </p>
+}
+else
+{
+    <table class="table">
+        <thead>
+        <tr>
+            <th>order id</th>
+            <th>Order State</th>
+            <th>Order pizzas</th>
+            <th>Order name</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var order in orders)
+        {
+            <tr>
+                <td >@order.OrderId</td>
+                <td>@order.OrderState</td>
+                <td>@order.Pizzas.Count()</td>
+                <td>@order.Name</td>
+                <td>
+                    <button  class="btn btn-primary" @onclick="@(() => Change(@order.OrderId))">Show</button>
+                </td>
+                
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+<PizzaInfo @bind-Order="@this.order"></PizzaInfo>
+
+
+
+@code{
+
+    public string? token = "";
+    public IEnumerable<OrderDto>? orders;
+    public OrderDto order = null;
+    protected override async Task OnInitializedAsync()
+    {
+        token = await this.AccountService.Login();
+        orders = (await this.OrderService.GetAllOrders(token));
+    }
+
+
+    public void Change(int id)
+    {
+        Console.WriteLine("clicked" + id);
+        this.order = orders.FirstOrDefault(x => x.OrderId == id);
+    }
+    
+
+}
